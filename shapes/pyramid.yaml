@@ -1,0 +1,74 @@
+triangles:
+  # Base of the pyramid (square) - 2 triangles
+  - vertices:
+      - x: 100
+        y: 0
+        z: 100
+      - x: -100
+        y: 0
+        z: 100
+      - x: -100
+        y: 0
+        z: -100
+    color: YELLOW
+
+  - vertices:
+      - x: 100
+        y: 0
+        z: 100
+      - x: -100
+        y: 0
+        z: -100
+      - x: 100
+        y: 0
+        z: -100
+    color: YELLOW
+
+  # 4 side faces of the pyramid (triangles)
+  - vertices:
+      - x: 100
+        y: 0
+        z: 100
+      - x: -100
+        y: 0
+        z: 100
+      - x: 0
+        y: 200
+        z: 0
+    color: RED
+
+  - vertices:
+      - x: -100
+        y: 0
+        z: 100
+      - x: -100
+        y: 0
+        z: -100
+      - x: 0
+        y: 200
+        z: 0
+    color: GREEN
+
+  - vertices:
+      - x: -100
+        y: 0
+        z: -100
+      - x: 100
+        y: 0
+        z: -100
+      - x: 0
+        y: 200
+        z: 0
+    color: BLUE
+
+  - vertices:
+      - x: 100
+        y: 0
+        z: -100
+      - x: 100
+        y: 0
+        z: 100
+      - x: 0
+        y: 200
+        z: 0
+    color: WHITE

@@ -1,0 +1,6 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "c:\\Users\\Max\\Desktop\\Libraries\\Yaml\\snakeyaml-2.2.jar"
+    ]
+}

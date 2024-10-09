@@ -1,0 +1,45 @@
+triangles:
+  - vertices:
+      - x: 100
+        y: 100
+        z: 100
+      - x: -100
+        y: -100
+        z: 100
+      - x: -100
+        y: 100
+        z: -100
+    color: WHITE
+  - vertices:
+      - x: 100
+        y: 100
+        z: 100
+      - x: -100
+        y: -100
+        z: 100
+      - x: 100
+        y: -100
+        z: -100
+    color: RED
+  - vertices:
+      - x: -100
+        y: 100
+        z: -100
+      - x: 100
+        y: -100
+        z: -100
+      - x: 100
+        y: 100
+        z: 100
+    color: GREEN
+  - vertices:
+      - x: -100
+        y: 100
+        z: -100
+      - x: 100
+        y: -100
+        z: -100
+      - x: -100
+        y: -100
+        z: 100
+    color: BLUE

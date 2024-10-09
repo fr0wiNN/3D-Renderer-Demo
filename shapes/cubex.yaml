@@ -129,7 +129,7 @@ triangles:
       - x: -100
         y: -100
         z: 100
-    color: PINK
+    color: CYAN
 
   - vertices:
       - x: 100
@@ -141,4 +141,4 @@ triangles:
       - x: -100
         y: -100
         z: 100
-    color: PINK
+    color: CYAN

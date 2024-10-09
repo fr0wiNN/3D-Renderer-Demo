@@ -16,7 +16,7 @@ public class ShapeLoader {
             case "BLUE": return Color.BLUE;
             case "YELLOW": return Color.YELLOW;
             case "BLACK": return Color.BLACK;
-            case "PINK": return Color.PINK;
+            case "CYAN": return Color.CYAN;
             default: throw new IllegalArgumentException("Unknown color: " + color);
         }
     }

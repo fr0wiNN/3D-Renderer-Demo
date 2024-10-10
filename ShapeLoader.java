@@ -133,15 +133,15 @@ public class ShapeLoader {
         }
 
 
-        //for (int x = 0 ; x < triangles.size() ; x++){
-        //    Random a = new Random();
-        //
-        //    int r = a.nextInt(2);
-        //    if (r == 1)
-        //        triangles.get(x).color = Color.BLACK;
-        //    else 
-        //        triangles.get(x).color = Color.MAGENTA;
-        //}
+        for (int x = 0 ; x < triangles.size() ; x++){
+            Random a = new Random();
+        
+            int r = a.nextInt(2);
+            if (r == 1)
+                triangles.get(x).color = Color.GREEN;
+            else 
+                triangles.get(x).color = Color.GREEN;
+        }
 
         //triangles.get(triangles.size() - 2).color = Color.RED;
 

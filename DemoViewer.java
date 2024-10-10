@@ -1,38 +1,36 @@
 import javax.swing.*;
+
+import org.yaml.snakeyaml.constructor.SafeConstructor.ConstructUndefined;
+
 import java.awt.*;
-import java.awt.event.MouseListener;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.util.List;
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
 
 public class DemoViewer {
 
-    public static double xRot = 0;
-    public static double yRot = 0;
-    public static double zRot = 0;
+    private static int prevMouseX, prevMouseY;
+    private static boolean dragging = false;
+    private static int heading = 0; 
+    private static int pitch = 0;
+    private static int zoom = 0;
 
     public static void main(String[] args) {
-        JFrame frame  = new JFrame("Demo Viewer");
+        JFrame frame = new JFrame("Demo Viewer");
         Container pane = frame.getContentPane();
         pane.setLayout(new BorderLayout());
 
-        //Horizonatal Slider
-        JSlider headingSlider = new JSlider(0, 360, 180);
-
-        //Vertical Slider
-        JSlider pitchSlider = new JSlider(SwingConstants.VERTICAL, -90, 90, 0);
-        pane.add(pitchSlider, BorderLayout.EAST);
-
-        JSlider zoomSlider = new JSlider(-50, 100, 0);
-        JPanel bottomSlidePanel = new JPanel(new GridLayout(2,1));
-        bottomSlidePanel.add(headingSlider);
-        bottomSlidePanel.add(zoomSlider);
-
-        pane.add(bottomSlidePanel, BorderLayout.SOUTH);
-
-        //List<Triangle> tris = inflate(inflate(inflate(inflate(inflate(ShapeLoader.loadShapeFromYaml("shapes/triangle.yaml"))))));
         List<Triangle> tris = ShapeLoader.loadShapeFromObj("shapes/airboat.obj");
         
 
@@ -42,21 +40,20 @@ public class DemoViewer {
                 g2.setColor(Color.DARK_GRAY);
                 g2.fillRect(0, 0, getWidth(), getHeight());
 
-                double heading = Math.toRadians(headingSlider.getValue());                      
+                double heading_tmp = Math.toRadians(heading);                      
                 //double heading = Math.toRadians(xRot % 360);
                 Matrix3 headingTransform = new Matrix3(new double[] {
-                    Math.cos(heading), 0, -Math.sin(heading),
+                    Math.cos(heading_tmp), 0, -Math.sin(heading_tmp),
                     0,                 1,                   0, 
-                    Math.sin(heading), 0, Math.cos(heading)
+                    Math.sin(heading_tmp), 0, Math.cos(heading_tmp)
                 });
-                double pitch = Math.toRadians(pitchSlider.getValue()); 
+                double pitch_tmp = Math.toRadians(pitch); 
                 //double pitch = Math.toRadians(yRot % 360);
                 Matrix3 pitchTransform = new Matrix3(new double[] {
                     1,               0,               0,
-                    0, Math.cos(pitch), Math.sin(pitch),
-                    0, -Math.sin(pitch), Math.cos(pitch)
+                    0, Math.cos(pitch_tmp), Math.sin(pitch_tmp),
+                    0, -Math.sin(pitch_tmp), Math.cos(pitch_tmp)
                 });
-                double zoom = zoomSlider.getValue();
                 Matrix3 zoomTransform = new Matrix3(new double[] {
                     zoom/10,    0,         0,
                     0,          zoom/10,   0,
@@ -65,7 +62,6 @@ public class DemoViewer {
 
                 Matrix3 transform = headingTransform.multiply(pitchTransform).multiply(zoomTransform);
 
-                g2.setColor(Color.WHITE);
 
                 BufferedImage img = 
                     new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -140,22 +136,51 @@ public class DemoViewer {
         };
         pane.add(renderPanel, BorderLayout.CENTER);
 
-        headingSlider.addChangeListener(e -> renderPanel.repaint());
-        pitchSlider.addChangeListener(e -> renderPanel.repaint());
-        zoomSlider.addChangeListener(e -> renderPanel.repaint());
+        // Add mouse listeners to manipulate heading, pitch, and zoom
+        renderPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                prevMouseX = e.getX();
+                prevMouseY = e.getY();
+                pane.setCursor(new Cursor(Cursor.MOVE_CURSOR));
+                dragging = true;
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                pane.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                dragging = false;
+            }
+        });
+
+        renderPanel.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (dragging) {
+                    int deltaX = e.getX() - prevMouseX;
+                    int deltaY = e.getY() - prevMouseY;
+
+                    heading -= deltaX;
+                    pitch -= deltaY;
+
+                    prevMouseX = e.getX();
+                    prevMouseY = e.getY();
+
+                    renderPanel.repaint();
+                }
+            }
+        });
+
+        renderPanel.addMouseWheelListener(e -> {
+            int notches = e.getWheelRotation();
+            zoom -= notches * 10;
+            renderPanel.repaint();
+        });
 
         frame.setSize(400, 400);
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        //while(true) {
-        //    Random random = new Random();
-        //    xRot += 0.000005 * random.nextInt(5);
-        //    yRot += 0.000007 * random.nextInt(5);
-        //    random = null;
-        //    renderPanel.repaint();
-        //}
     }
 
     public static Color getShade(Color color, double shade) {

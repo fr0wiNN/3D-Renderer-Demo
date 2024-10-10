@@ -19,49 +19,51 @@ public class DemoViewer {
         pane.setLayout(new BorderLayout());
 
         //Horizonatal Slider
-        //JSlider headingSlider = new JSlider(0, 360, 180);
+        JSlider headingSlider = new JSlider(0, 360, 180);
 
         //Vertical Slider
-        //JSlider pitchSlider = new JSlider(SwingConstants.VERTICAL, -90, 90, 0);
-        //pane.add(pitchSlider, BorderLayout.EAST);
+        JSlider pitchSlider = new JSlider(SwingConstants.VERTICAL, -90, 90, 0);
+        pane.add(pitchSlider, BorderLayout.EAST);
 
-        //JSlider zoomSlider = new JSlider(0, 200, 100);
-        //JPanel bottomSlidePanel = new JPanel(new GridLayout(2,1));
-        //bottomSlidePanel.add(headingSlider);
-        //bottomSlidePanel.add(zoomSlider);
+        JSlider zoomSlider = new JSlider(-50, 100, 0);
+        JPanel bottomSlidePanel = new JPanel(new GridLayout(2,1));
+        bottomSlidePanel.add(headingSlider);
+        bottomSlidePanel.add(zoomSlider);
 
-        //pane.add(bottomSlidePanel, BorderLayout.SOUTH);
+        pane.add(bottomSlidePanel, BorderLayout.SOUTH);
 
-        List<Triangle> tris = inflate(inflate(inflate(inflate(inflate(ShapeLoader.loadShapeFromYaml("shapes/triangle.yaml"))))));
+        //List<Triangle> tris = inflate(inflate(inflate(inflate(inflate(ShapeLoader.loadShapeFromYaml("shapes/triangle.yaml"))))));
+        List<Triangle> tris = ShapeLoader.loadShapeFromObj("shapes/airboat.obj");
         
 
         JPanel renderPanel = new JPanel() {
             public void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g;
-                g2.setColor(Color.BLACK);
+                g2.setColor(Color.DARK_GRAY);
                 g2.fillRect(0, 0, getWidth(), getHeight());
 
-                                      
-                double heading = Math.toRadians(xRot % 360);
+                double heading = Math.toRadians(headingSlider.getValue());                      
+                //double heading = Math.toRadians(xRot % 360);
                 Matrix3 headingTransform = new Matrix3(new double[] {
                     Math.cos(heading), 0, -Math.sin(heading),
                     0,                 1,                   0, 
                     Math.sin(heading), 0, Math.cos(heading)
                 });
-                double pitch = Math.toRadians(yRot % 360);
+                double pitch = Math.toRadians(pitchSlider.getValue()); 
+                //double pitch = Math.toRadians(yRot % 360);
                 Matrix3 pitchTransform = new Matrix3(new double[] {
                     1,               0,               0,
                     0, Math.cos(pitch), Math.sin(pitch),
                     0, -Math.sin(pitch), Math.cos(pitch)
                 });
-                //double zoom = zoomSlider.getValue();
-                //Matrix3 zoomTransform = new Matrix3(new double[] {
-                //    zoom/100,    0,         0,
-                //    0,          zoom/100,   0,
-                //    0,          0,         zoom/100
-                //});
+                double zoom = zoomSlider.getValue();
+                Matrix3 zoomTransform = new Matrix3(new double[] {
+                    zoom/10,    0,         0,
+                    0,          zoom/10,   0,
+                    0,          0,         zoom/10
+                });
 
-                Matrix3 transform = headingTransform.multiply(pitchTransform);
+                Matrix3 transform = headingTransform.multiply(pitchTransform).multiply(zoomTransform);
 
                 g2.setColor(Color.WHITE);
 
@@ -138,22 +140,22 @@ public class DemoViewer {
         };
         pane.add(renderPanel, BorderLayout.CENTER);
 
-        //headingSlider.addChangeListener(e -> renderPanel.repaint());
-        //pitchSlider.addChangeListener(e -> renderPanel.repaint());
-        //zoomSlider.addChangeListener(e -> renderPanel.repaint());
+        headingSlider.addChangeListener(e -> renderPanel.repaint());
+        pitchSlider.addChangeListener(e -> renderPanel.repaint());
+        zoomSlider.addChangeListener(e -> renderPanel.repaint());
 
         frame.setSize(400, 400);
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        while(true) {
-            Random random = new Random();
-            xRot += 0.000005 * random.nextInt(5);
-            yRot += 0.000007 * random.nextInt(5);
-            random = null;
-            renderPanel.repaint();
-        }
+        //while(true) {
+        //    Random random = new Random();
+        //    xRot += 0.000005 * random.nextInt(5);
+        //    yRot += 0.000007 * random.nextInt(5);
+        //    random = null;
+        //    renderPanel.repaint();
+        //}
     }
 
     public static Color getShade(Color color, double shade) {
